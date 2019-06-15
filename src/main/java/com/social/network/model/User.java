@@ -31,6 +31,8 @@ public class User implements Serializable {
 	private String password;
 
 	private String phone;
+	
+	private String aboutMe;
 
 	//bi-directional many-to-one association to Friendship
 	@OneToMany(mappedBy="sender")
@@ -105,6 +107,14 @@ public class User implements Serializable {
 
 	public String getPhone() {
 		return this.phone;
+	}
+	
+	public String getAboutMe() {
+		return aboutMe;
+	}
+
+	public void setAboutMe(String aboutMe) {
+		this.aboutMe = aboutMe;
 	}
 
 	public void setPhone(String phone) {

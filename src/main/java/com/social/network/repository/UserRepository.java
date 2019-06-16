@@ -17,4 +17,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 			+ "WHERE CONCAT(u.name, u.lastname) like %?1%",
 			nativeQuery = true)
 	List<User> findByName(String name);
+	
 }

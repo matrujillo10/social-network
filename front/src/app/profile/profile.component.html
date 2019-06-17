@@ -1,0 +1,20 @@
+<div *ngIf="profile" id="profile">
+  <div id="profile-header">
+    <h1>{{ profile.name }} {{ profile.lastname }}</h1>
+    <div>
+      <span id="about-me">{{ profile.aboutMe }}</span>
+      <span>{{ profile.email }}</span>
+      <span>{{ profile.phone }}</span>
+    </div>
+    <div id="profile-buttons">
+      <button class="accent-btn" routerLink="./wall">Wall</button>
+      <button class="accent-btn" routerLink="./friends">Friends</button>
+    </div>
+  </div>
+  <div>
+    <router-outlet></router-outlet>
+  </div>
+</div>
+<div *ngIf="!profile">
+  Loading...
+</div>

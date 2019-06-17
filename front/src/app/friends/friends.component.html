@@ -1,0 +1,24 @@
+<div *ngIf="!!currentUser" id="friends">
+  <h3>Friends</h3>
+  <div class="buttons">
+    <button class="accent-btn" (click)="seeAllFriends()">All Friends</button>
+    <button class="accent-btn" (click)="seeSentRequests()">Sent requests</button>
+    <button class="accent-btn" (click)="seeReceivedRequests()">Received Requests</button>
+  </div>
+  <div id="friends-container">
+    <div *ngFor="let f of showingFriends" class="friend-item">
+      <span *ngIf="f.recipient.email === currentUser.email">
+        0 {{ f.accepted }} {{ f.sender.name }} {{ f.sender.lastname }}
+      </span>
+      <span *ngIf="f.recipient.email !== currentUser.email">
+        1 {{ f.accepted }} {{ f.recipient.name }} {{ f.recipient.lastname }}
+      </span>
+
+      <button class="accent-btn">See Profile</button>
+      <button class="accent-btn" *ngIf="!f.accepted">
+        {{ f.recipient.email === currentUser.email ? 'Delete Request' : 'Cancel Request' }}
+      </button>
+      <button class="accent-btn" *ngIf="f.accepted">Remove Friend</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+#profile > #profile-header {
+  background-color: var(--accent-alpha);
+  padding: 10px;
+}
+
+#profile > #profile-header > h1,
+#profile > #profile-header > div {
+  margin: 0;
+  text-align: center;
+}
+
+#profile > #profile-header > div > span {
+  display: block;
+}
+
+#profile > #profile-header > div > span#about-me {
+  font-size: 0.8em;
+  color: gray;
+}
+
+#profile > #profile-header > #profile-buttons {
+  width: fit-content;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 5px;
+  padding-top: 10px;
+}

@@ -1,0 +1,76 @@
+#header {
+  height: 50px;
+  background-color: var(--accent);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+}
+
+#header > * {
+  display: inline-block;
+}
+
+#header > h1 {
+  margin: 0;
+  color: white;
+  text-align: center;
+}
+
+#header > div {
+  width: 50%;
+}
+
+#header > div > input {
+  margin: 10px;
+  padding: 5px 10px;
+  border-radius: 50px;
+  border: 1px solid transparent;
+  outline: none;
+  width: 100%;
+}
+
+#content {
+  height: calc(100% - 50px);
+  background-color: white;
+  padding-top: 50px;
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+}
+
+#content > div:first-child {
+  background-color: var(--gray);
+  text-align: center;
+  position: relative;
+}
+
+#content > div:first-child > div {
+  position: fixed;
+  width: calc(20% - 38px);
+}
+
+#content > div:first-child > div > #profile > div {
+  width: 80%;
+  padding-top: 80%;
+  background-color: white;
+  margin: 20px auto;
+  border-radius: 50%;
+}
+
+#content > div:first-child > div > #options > button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  background-color: transparent;
+  color: var(--accent);
+}
+
+#content > div:first-child > div > #options > button:hover {
+  background-color: var(--accent);
+  color: white;
+}

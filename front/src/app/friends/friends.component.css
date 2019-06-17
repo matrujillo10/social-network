@@ -1,0 +1,26 @@
+#friends > h3 {
+  text-align: center;
+}
+
+#friends > .buttons {
+  text-align: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: fit-content;
+  grid-gap: 5px;
+  margin: auto;
+  padding: 10px;
+}
+
+#friends-container > .friend-item {
+  padding: 10px 10px 15px;
+  border-bottom: 1px solid lightgray;
+}
+
+#friends-container > .friend-item:hover {
+  background-color: #f0f0f0;
+}
+
+#friends-container > .friend-item > button {
+  float: right;
+}

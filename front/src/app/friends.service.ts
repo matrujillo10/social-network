@@ -41,7 +41,7 @@ export class FriendsService {
   }
 
   create(senderID: number, recipientID: number): Observable<Friend> {
-    return this.http.post<Friend>(`/sender/${senderID}/recipient/${recipientID}/friendship`, {}, httpOptions)
+    return this.http.post<Friend>(`${this.api}/sender/${senderID}/recipient/${recipientID}/friendship`, undefined, httpOptions)
       .pipe(catchError(this.handleError<Friend>(`createFriendship`, undefined)));
   }
 

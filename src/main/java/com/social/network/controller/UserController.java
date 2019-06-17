@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.MediaType;
 
+import com.social.network.dto.PasswordUpdateDto;
 import com.social.network.dto.UserDto;
 import com.social.network.model.User;
 import com.social.network.service.UserService;
@@ -24,9 +26,16 @@ public class UserController {
 	private UserService service;
 	
 	@GetMapping(value = "/users", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public @ResponseBody List<UserDto> getAll() {
+	public @ResponseBody List<UserDto> getAll(
+			@RequestParam(value = "name", required = false) String name) {
+		List<User> models;
+		if (name != null && !name.isEmpty()) {
+			models = service.getAllByName(name);
+		} else {
+			models = service.getAll();
+		}
 		List<UserDto> dtos = new ArrayList<>();
-		for (User model : service.getAll()) {
+		for (User model : models) {
 			dtos.add(UserDto.model2dto(model));
 		}
 		return dtos;
@@ -47,6 +56,14 @@ public class UserController {
 			produces = {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody UserDto update(@PathVariable("id") Integer id, @RequestBody UserDto dto) {
 		return UserDto.model2dto(service.update(id, dto2model(dto, false)));
+	}
+	
+	@PutMapping(value = "/users/{id}/password", consumes = {MediaType.APPLICATION_JSON_VALUE},
+			produces = {MediaType.APPLICATION_JSON_VALUE})
+	public @ResponseBody UserDto updatePassword(
+			@PathVariable("id") Integer id, 
+			@RequestBody PasswordUpdateDto dto) {
+		return UserDto.model2dto(service.updatePassword(id, dto));
 	}
 	
 	@DeleteMapping(value = "/users/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})

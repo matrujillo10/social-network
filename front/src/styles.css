@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+
+:root {
+  /* --accent: #CCC314; */
+  --accent: #469AB3;
+  --accent-alpha: rgba(70, 154, 179, 0.3);
+  --secondary: var(--accent);
+  --gray: #eeeeee;
+  font-family: 'Open Sans', sans-serif;
+}
+
+html,
+body,
+app-root {
+  height: 100%;
+  width: 100%;
+  display: block;
+  margin: 0;
+}
+
+button {
+  outline: none;
+  cursor: pointer;
+}
+
+.accent-btn {
+  background-color: white;
+  border: 1px solid var(--accent);
+  padding: 5px 10px;
+  color: var(--accent);
+}
+
+.accent-btn:hover {
+  background-color: var(--accent);
+  color: white;
+}

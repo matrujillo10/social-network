@@ -26,3 +26,15 @@
   grid-gap: 5px;
   padding-top: 10px;
 }
+
+#profile-header > h1 + .accent-btn {
+  background-color: white;
+  border: 2px solid var(--accent);
+  padding: 10px 15px;
+  border-radius: 50%;
+  position: absolute;
+  right: 10px;
+  top: 60px;
+  color: var(--accent);
+  font-weight: bold;
+}

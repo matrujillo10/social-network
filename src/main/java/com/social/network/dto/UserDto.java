@@ -4,7 +4,6 @@ import java.util.Date;
 
 import com.social.network.model.User;
 
-
 public class UserDto {
 	private int id;
 	private Date birthday;
@@ -14,43 +13,43 @@ public class UserDto {
 	private String phone;
 	private String password;
 	private String aboutMe;
-	
+
 	public int getId() {
 		return id;
 	}
-	
+
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public Date getBirthday() {
 		return birthday;
 	}
-	
+
 	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
 	}
-	
+
 	public String getEmail() {
 		return email;
 	}
-	
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+
 	public String getLastname() {
 		return lastname;
 	}
-	
+
 	public void setLastname(String lastname) {
 		this.lastname = lastname;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -58,19 +57,19 @@ public class UserDto {
 	public String getPhone() {
 		return phone;
 	}
-	
+
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	
+
 	public String getPassword() {
 		return password;
 	}
-	
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	public String getAboutMe() {
 		return aboutMe;
 	}

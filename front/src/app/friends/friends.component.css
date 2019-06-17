@@ -24,3 +24,11 @@
 #friends-container > .friend-item > button {
   float: right;
 }
+
+#friends > #info-container {
+  text-align: center;
+}
+
+#friends > #info-container > .info {
+  color: gray;
+}

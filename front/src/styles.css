@@ -2,7 +2,7 @@
 
 :root {
   /* --accent: #CCC314; */
-  --accent: #469AB3;
+  --accent: #469ab3;
   --accent-alpha: rgba(70, 154, 179, 0.3);
   --secondary: var(--accent);
   --gray: #eeeeee;
@@ -33,4 +33,78 @@ button {
 .accent-btn:hover {
   background-color: var(--accent);
   color: white;
+}
+
+#modal-bg {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.7);
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 50;
+}
+
+#modal-container {
+  background-color: white;
+  box-shadow: 0 1px 10px -5px black;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 10000;
+  transform: translate(-50%, -50%);
+  min-width: 40%;
+  min-height: 20%;
+  border-radius: 5px;
+  padding: 20px 25px 20px 20px;
+}
+
+#modal-container > #modal-header {
+  padding-right: 50px;
+}
+
+#modal-container > #modal-header > h3 {
+  margin: 0;
+  position: relative;
+  text-align: center;
+  color: gray;
+  padding: 0 0 10px;
+}
+
+#modal-container > #modal-header > button {
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background-color: white;
+  color: gray;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+
+#modal-container > #modal-header > button:hover {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+#modal-container > #modal-content > * {
+  display: block;
+}
+
+#modal-container > #modal-content > textarea {
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  width: 100%;
+  margin: 0;
+  resize: none;
+  height: 100px;
+  margin-right: 10px;
+  padding: 5px;
+  outline-color: var(--accent);
+}
+
+#modal-container > #modal-content > button {
+  margin-left: 100%;
+  transform: translateX(-80%);
+  margin-top: 10px;
+  margin-bottom: -5px;
 }

@@ -1,6 +1,7 @@
 export interface Image {
   id?: number;
   path: string;
+  filter?: number;
 }
 
 export interface Post {
@@ -19,16 +20,6 @@ export interface Comment {
   post?: Post;
 }
 
-export interface Friend {
-  id?: number;
-  birthday: Date;
-  email: string;
-  lastname: string;
-  name: string;
-  phone: string;
-  aboutMe: string;
-}
-
 export interface Friendship {
   id?: number;
   accepted: number;
@@ -37,7 +28,7 @@ export interface Friendship {
 }
 
 export interface User {
-  id?: number;
+  id?: any;
   birthday: Date;
   email: string;
   lastname: string;
@@ -45,9 +36,13 @@ export interface User {
   password: string;
   phone: string;
   aboutMe: string;
-  friendshipsSent: Friendship[];
-  friendshipsRecieved: Friendship[];
-  comments: Comment[];
-  postsCreated: Post[];
-  postsRecieved: Post[];
+}
+
+export interface Friend extends User {
+  accepted?: number;
+  id?: {
+    sender?: User;
+    recipient?: User;
+  };
+  state?: number;
 }

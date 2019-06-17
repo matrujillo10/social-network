@@ -1,30 +1,55 @@
-<div *ngIf="currentUser" id="wall">
-  <div *ngFor="let p of posts">
-    <div class="card">
-      <div class="post-header">
-        <span>{{ p.creator.name + ' ' + p.creator.lastname }}</span>
+<div id="wall-container">
+  <button
+    id="add-post-container"
+    (click)="openModal()"
+    [class.empty]="(posts && posts.length === 0)">
+    &#x2b;
+  </button>
+  <div *ngIf="posts" id="wall">
+    <div *ngFor="let p of posts">
+      <div class="card">
+        <div class="post-header">
+          <span>{{ p.creator.name + ' ' + p.creator.lastname }}</span>
+        </div>
+        <div class="post-content">
+          {{ p.content }}
+        </div>
       </div>
-      <div class="post-content">
-        {{ p.content }}
-      </div>
-    </div>
-    <div class="card comments">
-      <div class="post-header">
-        <span>Comments</span>
-      </div>
-      <div class="comment-container">
-        <div *ngFor="let c of p.comments">
-          <div class="post-header">
-            <span>{{ c.user.name + ' ' + c.user.lastname }}</span>
-          </div>
-          <div class="post-content">
-            <span>{{ c.comment }}</span>
+      <div class="card comments">
+        <div class="post-header">
+          <span>Comments</span>
+        </div>
+        <div class="comment-container">
+          <div *ngFor="let c of p.comments">
+            <div class="post-header">
+              <span>{{ c.user.name + ' ' + c.user.lastname }}</span>
+            </div>
+            <div class="post-content">
+              <span>{{ c.comment }}</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <div *ngIf="!currentUser">
+    Loading...
+  </div>
 </div>
-<div *ngIf="!currentUser">
-  Loading...
+
+<div id="modal-bg" *ngIf="showModal"></div>
+<div id="modal-container" *ngIf="currentUser && showModal">
+  <div id="modal-header">
+    <h3>Add Post in {{ currentUser.name + ' ' + currentUser.lastname }} Wall</h3>
+    <button (click)="closeModal()">&times;</button>
+  </div>
+  <div id="modal-content">
+    <textarea [(ngModel)]="newPost"></textarea>
+
+    <input #imageinput type="file" accept="image/*" (change)="processImage(imageinput)" />
+
+    <button class="accent-btn" (click)="createPost(currentUser)">
+      Post
+    </button>
+  </div>
 </div>

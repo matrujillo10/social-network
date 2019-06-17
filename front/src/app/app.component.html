@@ -1,23 +1,73 @@
 <div id="header">
   <h1>RedSocial</h1>
   <div>
-    <input placeholder="Search for friends!" />
+    <input placeholder="Search for friends!" [(ngModel)]="friendSearch" (keyup.enter)="search()" />
   </div>
 </div>
-<div id="content">
+<div id="content" *ngIf="user">
   <div>
     <div>
       <div id="profile">
         <div id="img"></div>
-        <h2>{{ user.firstName }} {{ user.lastName }}</h2>
+        <h2>{{ user.name }} {{ user.lastname }}</h2>
       </div>
       <div id="options">
-        <button routerLink="/profile">Profile</button>
+        <button routerLink="/profile/me">Profile</button>
         <button routerLink="/feed">Feed</button>
       </div>
     </div>
   </div>
   <div>
     <router-outlet></router-outlet>
+  </div>
+</div>
+<div id="content" class="no-user" *ngIf="!user">
+  <div id="login-bg"></div>
+  <div class="login-box" *ngIf="state === 0">
+    <h4>Welcome to the best Social Network</h4>
+    <button (click)="changeState(1)">Login</button>
+    <button (click)="changeState(2)">Signup</button>
+  </div>
+  <div class="login-box" *ngIf="state === 1">
+    <div class="log-header">
+      <button (click)="changeState(0)" class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <span>Login</span>
+    </div>
+
+    <input [(ngModel)]="form.login.email" type="email" placeholder="email" />
+    <input [(ngModel)]="form.login.password" type="password" placeholder="password" />
+
+    <button class="action-btn" (click)="login()">Login</button>
+  </div>
+  <div class="login-box big" *ngIf="state === 2">
+    <div class="log-header">
+      <button (click)="changeState(0)" class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <span>Signup</span>
+    </div>
+
+    <input [(ngModel)]="form.signup.name" type="text" placeholder="name" />
+    <input [(ngModel)]="form.signup.lastname" type="text" placeholder="lastname" />
+    <input [(ngModel)]="form.signup.email" type="email" placeholder="email" />
+    <input [(ngModel)]="form.signup.password" type="password" placeholder="password" />
+    <input [(ngModel)]="form.signup.phone" type="tel" placeholder="phone" />
+    <input [(ngModel)]="form.signup.birthday" type="date" placeholder="birthday" />
+    <textarea [(ngModel)]="form.signup.aboutMe" placeholder="aboutme"></textarea>
+
+    <button class="action-btn" (click)="signup()">Signup</button>
+  </div>
+</div>
+
+<div id="modal-bg" *ngIf="showModal"></div>
+<div id="modal-container" *ngIf="showModal">
+  <div id="modal-header">
+    <h3>People in Social network</h3>
+    <button (click)="closeModal()">&times;</button>
+  </div>
+  <div id="modal-content">
+    <div>
+      <div *ngFor="let p of listPeople" class="found">
+        <div routerLink="/profile/{{ p.id }}" (click)="closeModal()">{{ p.name }} {{ p.lastname }}</div>
+      </div>
+    </div>
   </div>
 </div>

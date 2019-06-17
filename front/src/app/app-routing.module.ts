@@ -7,14 +7,14 @@ import { FriendsComponent } from './friends/friends.component';
 
 const routes: Routes = [
   {
-    path: 'profile', component: ProfileComponent, children: [
+    path: 'profile/:id', component: ProfileComponent, children: [
       { path: 'friends', component: FriendsComponent },
       { path: 'wall', component: WallComponent },
-      { path: '', redirectTo: 'wall', pathMatch: 'full' },
+      { path: '', redirectTo: 'feed', pathMatch: 'full' },
     ]
   },
   { path: 'feed', component: FeedComponent },
-  { path: '', redirectTo: '/feed', pathMatch: 'full' },
+  { path: '', redirectTo: '/profile', pathMatch: 'full' },
 ];
 
 @NgModule({

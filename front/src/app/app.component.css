@@ -41,6 +41,83 @@
   grid-template-columns: 1fr 5fr;
 }
 
+#content.no-user {
+  display: block;
+  position: relative;
+}
+
+#content.no-user > #login-bg {
+  background: url('/assets/social-net.jpg') no-repeat center;
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
+  height: 100%;
+  width: 100%;
+  background-size: cover;
+}
+
+#content.no-user > .login-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--accent);
+  padding: 10px 20px 20px;
+  box-shadow: 0 1px 10px -2px;
+  display: grid;
+}
+
+#content.no-user > .login-box > button {
+  background-color: white;
+  color: var(--accent);
+  border: 1px solid white;
+  padding: 5px 10px;
+  display: block;
+}
+
+#content.no-user > .login-box > button:hover {
+  background-color: var(--accent);
+  color: white;
+}
+
+#content.no-user > .login-box > h4 {
+  margin: 10px;
+  color: white;
+}
+
+.login-box.big {
+  width: 40%;
+}
+
+#content.no-user > .login-box > .log-header {
+  text-align: center;
+  padding-bottom: 15px;
+  color: white;
+}
+
+#content.no-user > .login-box > .log-header > button.back-btn {
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: white;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+#content.no-user > .login-box.big > textarea {
+  height: 80px;
+  padding: 5px;
+}
+
+#content.no-user > .login-box > input {
+  border: 0;
+  padding: 5px;
+  outline: none;
+  text-align: center;
+}
+
+#content.no-user > .login-box > button.action-btn {
+  margin-top: 10px;
+}
+
 #content > div:first-child {
   background-color: var(--gray);
   text-align: center;
@@ -73,4 +150,14 @@
 #content > div:first-child > div > #options > button:hover {
   background-color: var(--accent);
   color: white;
+}
+
+.found {
+  border: 1px solid lightgray;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.found:hover {
+  background-color: lightgray;
 }

@@ -39,3 +39,6 @@ ImageEffectsTcpServer/cmake_install.cmake
 ImageEffectsTcpServer/Makefile
 ImageEffectsTcpServer/CMakeFiles
 ImageEffectsTcpServer/ImageEffectsTcpServer
+
+application.properties
+bin/

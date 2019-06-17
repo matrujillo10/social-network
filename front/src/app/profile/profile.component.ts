@@ -1,6 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { User, Friendship } from '../models';
 import { SessionService } from '../session.service';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { Location } from '@angular/common';
+import { log } from 'util';
+import { FriendsService } from '../friends.service';
 
 @Component({
   selector: 'app-profile',
@@ -10,24 +14,43 @@ import { SessionService } from '../session.service';
 export class ProfileComponent implements OnInit {
 
   profile: User;
+  isMe = false;
+  friends = 0;
 
-  constructor(private service: SessionService) { }
+  constructor(
+    private session: SessionService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private friendship: FriendsService) { }
 
   ngOnInit() {
-    this.doLogin('', '');
+
+    const init = (id) => {
+      if (id === 'me') {
+        this.session.getSession().subscribe(u => this.profile = u);
+        this.session.me();
+        this.isMe = true;
+      }
+      else {
+        this.session.getProfile(+id).subscribe(u => this.profile = u);
+        this.isMe = false;
+      }
+    };
+
+    this.router.events.subscribe((val) => {
+      if (val instanceof NavigationEnd) {
+        const id = this.route.snapshot.paramMap.get('id');
+        init(id);
+      }
+    });
+    init(this.route.snapshot.paramMap.get('id'));
   }
 
-  doLogin(login: string, password: string): void {
-    this.service
-      .login(login, password)
-      .subscribe(profile => {
-        this.profile = profile;
-        this.profile.aboutMe = 'Hola soy yo y este es mi perfil #COl y blablabla';
-        this.profile.friendshipsSent.push({ sender: { email: 'dn@mail.com' }, recipient: { name: 'Angela', lastname: 'Narvaez' }, accepted: 0 });
-        this.profile.friendshipsRecieved.push({ recipient: { email: 'dn@mail.com' }, sender: { name: 'Adriana', lastname: 'Guerrero' }, accepted: 0 });
-        this.profile.postsCreated.push( {content:'Mi primer post', creator: {name: 'David', lastname: 'Narvaez'}, comments: [{comment:'Excelente post', user: {name: 'Angela', lastname: 'Narvaez'}}, {comment:'Msao Excelente post', user: {name: 'Angela', lastname: 'Narvaez'}}]} );
-        this.profile.postsCreated.push( {content:'Mi primer post', creator: {name: 'David', lastname: 'Narvaez'}, comments: [{comment:'Excelente post', user: {name: 'Angela', lastname: 'Narvaez'}}, {comment:'Msao Excelente post', user: {name: 'Angela', lastname: 'Narvaez'}}]} );
-        this.profile.postsCreated.push( {content:'Mi primer post', creator: {name: 'David', lastname: 'Narvaez'}, comments: [{comment:'Excelente post', user: {name: 'Angela', lastname: 'Narvaez'}}, {comment:'Msao Excelente post', user: {name: 'Angela', lastname: 'Narvaez'}}]} );
+  sendRequest(): void {
+    this.session.getSession()
+      .subscribe(me => {
+        this.friendship.create(me.id, this.profile.id)
+        .subscribe(f => this.friends = 1);
       });
   }
 }

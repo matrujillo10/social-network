@@ -16,8 +16,8 @@ public interface FriendshipRepository extends  JpaRepository<Friendship, Friends
 	
 	@Query(value = "SELECT * "
 			+ "FROM Friendship f "
-			+ "WHERE f.ID_SENDER = ?1 "
-			+ "OR f.ID_RECIPIENT = ?1 "
+			+ "WHERE (f.ID_SENDER = ?1 "
+			+ "OR f.ID_RECIPIENT = ?1)"
 			+ "AND f.ACCEPTED = 1",
 			nativeQuery = true)
 	List<Friendship> findByUser(Integer userID);

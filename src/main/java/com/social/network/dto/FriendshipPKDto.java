@@ -1,5 +1,7 @@
 package com.social.network.dto;
 
+import com.social.network.model.FriendshipPK;
+
 public class FriendshipPKDto {
 	private UserDto sender;
 	private UserDto recipient;
@@ -15,4 +17,15 @@ public class FriendshipPKDto {
 	public void setRecipient(UserDto recipient) {
 		this.recipient = recipient;
 	}	
+	
+	public static FriendshipPKDto model2dto(FriendshipPK model) {
+		FriendshipPKDto dto = new FriendshipPKDto();
+		UserDto sender = new UserDto();
+		sender.setId(model.getIdSender());
+		dto.setSender(sender);
+		UserDto recipient = new UserDto();
+		recipient.setId(model.getIdRecipient());
+		dto.setRecipient(recipient);
+		return dto;
+	}
 }

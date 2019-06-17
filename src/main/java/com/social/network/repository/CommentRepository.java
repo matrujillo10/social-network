@@ -10,9 +10,9 @@ import com.social.network.model.Post;
 import com.social.network.model.User;
 
 public interface CommentRepository extends JpaRepository<Comment, Integer>{
-	@Query(value = "SELECT * FROM Comment c WHERE c.user = ?1")
+	@Query(value = "SELECT c FROM Comment c WHERE c.user = ?1")
 	List<Comment> findByUser(User user);
 	
-	@Query(value = "SELECT * FROM Comment c WHERE c.post = ?1")
+	@Query(value = "SELECT c FROM Comment c WHERE c.post = ?1")
 	List<Comment> findByPost(Post post);
 }

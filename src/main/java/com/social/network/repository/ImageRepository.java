@@ -12,6 +12,6 @@ public interface ImageRepository extends JpaRepository<Image, Integer>{
 	@Query(value = "SELECT i FROM Image i WHERE i.path = ?1")
 	Image findByPath(String path);
 	
-	@Query(value = "SELECT * FROM Image i WHERE i.post = ?1")
+	@Query(value = "SELECT i FROM Image i WHERE i.post = ?1")
 	List<Image> findByPost(Post post);
 }

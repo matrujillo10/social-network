@@ -21,16 +21,10 @@ import com.social.network.model.User;
 import com.social.network.repository.CommentRepository;
 
 @Service
-public class CommentService implements IService<Comment, Integer>{
+public class CommentService {
 	@Autowired
 	private CommentRepository repository;
 
-	@Override
-	public List<Comment> getAll() {
-		return repository.findAll();
-	}
-
-	@Override
 	public Comment get(Integer id) throws EntityNotFoundException {
 		Optional<Comment> op = repository.findById(id);
 		if (!op.isPresent()) {
@@ -47,12 +41,10 @@ public class CommentService implements IService<Comment, Integer>{
 		return repository.findByPost(post);
 	}
 
-	@Override
 	public Comment create(Comment model) throws EntityAlreadyExistsException {
 		return repository.save(model);
 	}
 
-	@Override
 	public Comment update(Integer id, Comment model) throws EntityNotFoundException, ServerErrorException {
 		Comment old = get(id);
 		// Se definen los campos que pueden ser nulos. El serialVersionUID es obligatorio acá
@@ -79,7 +71,6 @@ public class CommentService implements IService<Comment, Integer>{
 		return repository.save(model);
 	}
 
-	@Override
 	public Comment remove(Integer id) throws EntityNotFoundException {
 		Comment comment = get(id);
 		repository.delete(comment);

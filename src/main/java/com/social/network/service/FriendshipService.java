@@ -16,39 +16,48 @@ import com.social.network.exception.EntityAlreadyExistsException;
 import com.social.network.exception.EntityNotFoundException;
 import com.social.network.exception.ServerErrorException;
 import com.social.network.model.Friendship;
-import com.social.network.model.User;
+import com.social.network.model.FriendshipPK;
 import com.social.network.repository.FriendshipRepository;
 
 @Service
-public class FriendshipService implements IService<Friendship, Integer>{
+public class FriendshipService {
 	@Autowired
 	private FriendshipRepository repository;
-
-	@Override
-	public List<Friendship> getAll() {
-		return repository.findAll();
+	
+	
+	public List<Friendship> getAllFriendships(Integer userID) {
+		return repository.findByUser(userID);
+	}
+	
+	public List<Friendship> getAllFriendshipsPendingByRecipient(Integer userID) {
+		return repository.findPendingByRecipient(userID);
+	}
+	
+	public List<Friendship> getAllFriendshipsSent(Integer userID) {
+		return repository.findSent(userID);
+	}
+	
+	public Friendship getFriendshipByUsers(Integer fID, Integer sID) {
+		Friendship f = repository.findByUsers(fID, sID);
+		if (f == null) {
+			throw new EntityNotFoundException();
+		}
+		return f;
 	}
 
-	@Override
-	public Friendship get(Integer id) throws EntityNotFoundException {
+	public Friendship get(FriendshipPK id) throws EntityNotFoundException {
 		Optional<Friendship> op = repository.findById(id);
 		if (!op.isPresent()) {
 			throw new EntityNotFoundException();
 		}
 		return op.get();
 	}
-	
-	public List<Friendship> getForUser(User recipient) throws EntityNotFoundException{
-		return repository.findForUser(recipient);
-	}
 
-	@Override
 	public Friendship create(Friendship model) throws EntityAlreadyExistsException {
 		return repository.save(model);
 	}
 
-	@Override
-	public Friendship update(Integer id, Friendship model) throws EntityNotFoundException, ServerErrorException {
+	public Friendship update(FriendshipPK id, Friendship model) throws EntityNotFoundException, ServerErrorException {
 		Friendship old = get(id);
 		// Se definen los campos que pueden ser nulos. El serialVersionUID es obligatorio acá
 		String[] nullables = new String[] {"serialVersionUID"};
@@ -74,8 +83,7 @@ public class FriendshipService implements IService<Friendship, Integer>{
 		return repository.save(model);
 	}
 
-	@Override
-	public Friendship remove(Integer id) throws EntityNotFoundException {
+	public Friendship remove(FriendshipPK id) throws EntityNotFoundException {
 		Friendship friendship = get(id);
 		repository.delete(friendship);
 		return friendship;

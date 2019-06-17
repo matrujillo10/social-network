@@ -1,16 +1,15 @@
 package com.social.network.dto;
 
 import com.social.network.model.Friendship;
-import com.social.network.model.FriendshipPK;
 
 
 public class FriendshipDto {
-	private FriendshipPK id;
+	private FriendshipPKDto id;
 	private short accepted;
-	public FriendshipPK getId() {
+	public FriendshipPKDto getId() {
 		return id;
 	}
-	public void setId(FriendshipPK id) {
+	public void setId(FriendshipPKDto id) {
 		this.id = id;
 	}
 	public short getAccepted() {
@@ -22,7 +21,10 @@ public class FriendshipDto {
 
 	public static FriendshipDto model2dto(Friendship model) {
 		FriendshipDto dto = new FriendshipDto();
-		dto.setId(model.getId());
+		FriendshipPKDto dtoID = new FriendshipPKDto();
+		dtoID.setRecipient(UserDto.model2dto(model.getRecipient()));
+		dtoID.setSender(UserDto.model2dto(model.getSender()));
+		dto.setId(dtoID);
 		dto.setAccepted(model.getAccepted());
 		return dto;
 	}

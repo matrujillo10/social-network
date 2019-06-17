@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.social.network.dto.FriendshipDto;
 import com.social.network.model.Friendship;
+import com.social.network.model.FriendshipPK;
 import com.social.network.model.User;
 import com.social.network.service.FriendshipService;
 
@@ -66,7 +67,10 @@ public class FriendshipController {
 	
 	private Friendship dto2model(FriendshipDto dto) {
 		Friendship model = new Friendship();
-		model.setId(dto.getId());
+		FriendshipPK id = new FriendshipPK();
+		id.setIdRecipient(dto.getId().getRecipient().getId());
+		id.setIdSender(dto.getId().getSender().getId());
+		model.setId(id);
 		model.setAccepted(dto.getAccepted());
 		return model;
 	}

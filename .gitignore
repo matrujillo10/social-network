@@ -31,3 +31,11 @@ HELP.md
 ### MacOs Files ###
 
 .DS_Store
+
+### Cmake Files ###
+
+ImageEffectsTcpServer/CMakeCache.txt
+ImageEffectsTcpServer/cmake_install.cmake
+ImageEffectsTcpServer/Makefile
+ImageEffectsTcpServer/CMakeFiles
+ImageEffectsTcpServer/ImageEffectsTcpServer

@@ -42,7 +42,19 @@ public class CommentService {
 	}
 
 	public Comment create(Comment model) throws EntityAlreadyExistsException {
-		return repository.save(model);
+		 Comment comment = repository.save(model);
+		 
+		 User user = model.getUser();
+		 List<Comment> usercomments = user.getComments();
+		 usercomments.add(comment);
+		 user.setComments(usercomments);
+		 
+		 Post post = model.getPost();
+		 List<Comment> postcomments = post.getComments();
+		 postcomments.add(comment);
+		 post.setComments(postcomments);
+		 
+		 return comment;
 	}
 
 	public Comment update(Integer id, Comment model) throws EntityNotFoundException, ServerErrorException {

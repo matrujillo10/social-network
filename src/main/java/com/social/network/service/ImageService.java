@@ -56,7 +56,7 @@ public class ImageService implements IService<Image, Integer>{
 	public Image update(Integer id, Image model) throws EntityNotFoundException, ServerErrorException {
 		Image old = get(id);
 		// Se definen los campos que pueden ser nulos. El serialVersionUID es obligatorio acá
-		String[] nullables = new String[] {"serialVersionUID","images","comments"};
+		String[] nullables = new String[] {"serialVersionUID"};
 		// Itera sobre todos los atributos de la clase
 		for (Field field : Image.class.getDeclaredFields()) {
 			// Si el atributo puede ser nulo, lo salta

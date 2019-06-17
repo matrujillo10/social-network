@@ -8,12 +8,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.social.network.exception.EntityAlreadyExistsException;
 import com.social.network.exception.EntityNotFoundException;
+import com.social.network.exception.LoginException;
 import com.social.network.exception.ServerErrorException;
 import com.social.network.model.User;
 import com.social.network.repository.UserRepository;
@@ -22,6 +24,13 @@ import com.social.network.repository.UserRepository;
 public class UserService implements IService<User, Integer> {
 	@Autowired
 	private UserRepository repository;
+	
+	public User login(String email, String password) throws LoginException {
+		User user = repository.login(email, DigestUtils.sha256Hex(password));
+		if (user == null)
+			throw new LoginException();
+		return user;
+	}
 
 	@Override
 	public List<User> getAll() {
@@ -39,12 +48,16 @@ public class UserService implements IService<User, Integer> {
 
 	@Override
 	public User create(User model) throws EntityAlreadyExistsException {
+		model.setPassword(DigestUtils.sha256Hex((model.getPassword())));
 		return repository.save(model);
 	}
 
 	@Override
 	public User update(Integer id, User model) throws EntityNotFoundException {
 		User old = get(id);
+		if (model.getPassword() != null) {
+			model.setPassword(DigestUtils.sha256Hex((model.getPassword())));
+		}
 		// Se definen los campos que pueden ser nulos. El serialVersionUID es obligatorio acá
 		String[] nullables = new String[] {"serialVersionUID"};
 		// Itera sobre todos los atributos de la clase

@@ -14,6 +14,13 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	@Query(value = 
 			"SELECT * "
 			+ "FROM USER u "
+			+ "WHERE u.email = ?1 AND u.password = ?2",
+			nativeQuery = true)
+	User login(String email, String password);
+	
+	@Query(value = 
+			"SELECT * "
+			+ "FROM USER u "
 			+ "WHERE CONCAT(u.name, u.lastname) like %?1%",
 			nativeQuery = true)
 	List<User> findByName(String name);

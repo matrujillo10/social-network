@@ -24,7 +24,7 @@ export class AppComponent {
   constructor(private session: SessionService) {
     this.form.login.email = 'dn@mail.com';
     this.form.login.password = '1234';
-    this.login();
+    // this.login();
   }
 
   login() {

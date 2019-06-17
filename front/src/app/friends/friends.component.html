@@ -22,7 +22,7 @@
       <button class="accent-btn" *ngIf="f.accepted" (click)="deleteRequest(f.id)">
         Remove Friend
       </button>
-      <button class="accent-btn" *ngIf="!f.accepted && f.state" (click)="acceptRequest(f.id)">
+      <button class="accent-btn" *ngIf="!f.accepted" (click)="acceptRequest(f.id)">
         Accept Request
       </button>
     </div>

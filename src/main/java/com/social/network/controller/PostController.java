@@ -33,6 +33,7 @@ import com.social.network.model.Image;
 import com.social.network.model.Post;
 import com.social.network.model.User;
 import com.social.network.service.PostService;
+import com.social.network.service.SocketClient;
 import com.social.network.service.UserService;
 
 @RestController
@@ -40,6 +41,10 @@ public class PostController {
 
 	@Value("${file.upload-dir}")
 	private String uploadDir;
+	@Value("${filter.socket.add}")
+	private String add;
+	@Value("${filter.socket.port}")
+	private int port;
 
 	@Autowired
 	private PostService service;
@@ -140,25 +145,7 @@ public class PostController {
 		return model;
 	}
 
-
-	/*
-	 {
-		"content": "Primer post en esta red social",
-		"creator": {
-			"id": 6
-		}, 
-		"recipient": {
-			"id": 6
-		},
-		"images": [
-			{
-				"path": ""
-			}
-		]
-	 } 
-
-	 */
-
+	
 	private ImageDto uploadFile(MultipartFile file, PostDto dto) {
 		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 		ImageDto image = null;
@@ -177,20 +164,14 @@ public class PostController {
 			Files.copy(file.getInputStream(), 
 					targetLocation, 
 					StandardCopyOption.REPLACE_EXISTING);
-			String[] f = fileName.split("\\.");
-			String command = uploadDir+";;;;"
-					+ f[0] + ";;;;"
-					+ "."+f[1] + ";;;;"
-					+ image.getFilter();
-			System.out.println(command);
 			String outputPath = uploadDir + fileName; 
 			if (image.getFilter() != null && !image.getFilter().isEmpty()) {
-				// TODO: Mandar la ruta al servidor de c++ para que agregue el filtro
-				// El socket espera: 
-				// RUTA;;;;NOMBRE SIN EXTENSION;;;;EXTENSION CON EL PUNTO;;;;FILTRO
-				// El filtro es un número entre el 1 y el 3
-				// TODO: Obtener la ruta del servidor.
-				// TODO: Cambiar por la ruta que da C
+				String[] f = fileName.split("\\.");
+				String command = uploadDir+";;;;"
+						+ f[0] + ";;;;"
+						+ "."+f[1] + ";;;;"
+						+ image.getFilter();
+				outputPath = new SocketClient(add, port).process(command);
 			}
 			image.setPath(outputPath);
 			return image;

@@ -6,17 +6,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import org.springframework.beans.factory.annotation.Value;
-
 import com.social.network.exception.ServerErrorException;
 
 public class SocketClient {
-
-	@Value("${filter.socket.add}")
-	private String add;
-	@Value("${filter.socket.port}")
-	private int port;
-
 	private Socket socket;
 	private BufferedReader dis;
 	private DataOutputStream dos;
@@ -38,7 +30,7 @@ public class SocketClient {
 		}
 	}
 
-	public SocketClient() {
+	public SocketClient(String add, int port) {
 		try {
 			socket = new Socket(add, port);
 			dis = new BufferedReader(new InputStreamReader(System.in));

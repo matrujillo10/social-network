@@ -15,22 +15,24 @@ import org.springframework.stereotype.Service;
 import com.social.network.exception.EntityAlreadyExistsException;
 import com.social.network.exception.EntityNotFoundException;
 import com.social.network.exception.ServerErrorException;
+import com.social.network.model.Image;
 import com.social.network.model.Post;
 import com.social.network.model.User;
 import com.social.network.repository.PostRepository;
 
 @Service
-public class PostService implements IService<Post, Integer>{
+public class PostService {
 	
 	@Autowired
 	private PostRepository repository;
 	
-	@Override
-	public List<Post> getAll() {
-		return repository.findAll();
+	@Autowired
+	private ImageService imageService;
+	
+	public List<Post> getWall(Integer id) {
+		return repository.findWall(id);
 	}
 
-	@Override
 	public Post get(Integer id) throws EntityNotFoundException {
 		Optional<Post> op = repository.findById(id);
 		if (!op.isPresent()) {
@@ -48,13 +50,16 @@ public class PostService implements IService<Post, Integer>{
 	}
 	
 
-	@Override
 	public Post create(Post model) throws EntityAlreadyExistsException {
-		return repository.save(model);
-		
+		Post post = repository.save(model);
+		for (int i = 0; i < post.getImages().size(); i++) {
+			Image img = post.getImages().get(i);
+			img.setPost(post);
+			post.getImages().set(i, imageService.create(img));
+		}
+		return post;
 	}
 
-	@Override
 	public Post update(Integer id, Post model) throws EntityNotFoundException, ServerErrorException {
 		Post old = get(id);
 		// Se definen los campos que pueden ser nulos. El serialVersionUID es obligatorio acá
@@ -81,7 +86,6 @@ public class PostService implements IService<Post, Integer>{
 		return repository.save(model);
 	}
 
-	@Override
 	public Post remove(Integer id) throws EntityNotFoundException {
 		Post post = get(id);
 		repository.delete(post);

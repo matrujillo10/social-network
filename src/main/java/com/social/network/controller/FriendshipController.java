@@ -35,11 +35,15 @@ public class FriendshipController {
 	 * @return La lista de las amistades aceptadas por él o al que se las envió.
 	 */
 	@GetMapping(value = "/users/{userID}/friendships", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public @ResponseBody List<FriendshipDto> getAll(@PathVariable("userID") Integer userID) {
+	public @ResponseBody List<UserDto> getAll(@PathVariable("userID") Integer userID) {
 		userService.get(userID); // Verifica que el usuario exista
-		List<FriendshipDto> dtos = new ArrayList<>();
+		List<UserDto> dtos = new ArrayList<>();
 		for (Friendship model : service.getAllFriendships(userID)) {
-			dtos.add(FriendshipDto.model2dto(model));
+			if (model.getRecipient().getId() == userID) {
+				dtos.add(UserDto.model2dto(model.getSender()));
+			} else {
+				dtos.add(UserDto.model2dto(model.getRecipient()));
+			}
 		}
 		return dtos;
 	}

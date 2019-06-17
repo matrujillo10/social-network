@@ -31,11 +31,11 @@ public class Post implements Serializable {
 	private User recipient;
 
 	//bi-directional many-to-one association to Comment
-	@OneToMany(mappedBy="post")
+	@OneToMany(mappedBy="post", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Comment> comments;
 
 	//bi-directional many-to-one association to Image
-	@OneToMany(mappedBy="post")
+	@OneToMany(mappedBy="post", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Image> images;
 
 	public Post() {

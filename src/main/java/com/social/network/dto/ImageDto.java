@@ -1,13 +1,12 @@
 package com.social.network.dto;
 
 import com.social.network.model.Image;
-import com.social.network.model.Post;
 
 public class ImageDto {
 	
 	private int id;
 	private String path;
-	private Post post;
+	private String filter;
 	
 	public int getId() {
 		return id;
@@ -21,18 +20,17 @@ public class ImageDto {
 	public void setPath(String path) {
 		this.path = path;
 	}
-	public Post getPost() {
-		return post;
+	public String getFilter() {
+		return filter;
 	}
-	public void setPost(Post post) {
-		this.post = post;
+	public void setFilter(String filter) {
+		this.filter = filter;
 	}
 	
 	public static ImageDto model2dto(Image model) {
 		ImageDto dto = new ImageDto();
 		dto.setId(model.getId());
 		dto.setPath(model.getPath());
-		dto.setPost(model.getPost());
 		return dto;
 	}
 }

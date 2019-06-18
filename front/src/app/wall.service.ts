@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { User, Post } from './models';
+import { ImageSnippet } from './wall/wall.component';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -24,10 +25,12 @@ export class WallService {
       .pipe(catchError(this.handleError<Post[]>('getProfile', [])));
   }
 
-  createPost(userId: number, post: Post, image: any): Observable<Post> {
+  createPost(userId: number, post: Post, image: File): Observable<Post> {
+    console.log(image, typeof image);
+    
     const formData = new FormData();
     formData.append('post', JSON.stringify(post));
-    formData.append('images', [image]);
+    formData.append('images', image);
 
     return this.http.post<Post>(`${this.api}/users/${userId}/posts`, formData);
   }

@@ -6,7 +6,7 @@ import { User, Post } from '../models';
 import { WallService } from '../wall.service';
 import { log } from 'util';
 
-class ImageSnippet {
+export class ImageSnippet {
   constructor(public src: string, public file: File) { }
 }
 
@@ -59,8 +59,8 @@ export class WallComponent implements OnInit {
   createPost(toUser: User): void {
     const file = this.selectedFile ? this.selectedFile.file.name : undefined;
     const post: Post = {
-      creator: { id: this.session.sessionUser.id },
-      recipient: { id: toUser.id },
+      creator: this.session.sessionUser,
+      recipient: toUser,
       comments: [],
       content: this.newPost,
       images: [
@@ -70,7 +70,7 @@ export class WallComponent implements OnInit {
       ]
     };
 
-    this.wallService.createPost(this.session.sessionUser.id, post, this.selectedFile)
+    this.wallService.createPost(this.session.sessionUser.id, post, this.selectedFile.file)
       .subscribe(p => {
         this.closeModal();
         this.fetchPosts(this.currentUser);

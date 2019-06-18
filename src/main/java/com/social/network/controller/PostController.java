@@ -99,6 +99,7 @@ public class PostController {
 			@RequestParam("post") String json,
 			@RequestParam("images") MultipartFile[] files) {
 		User user = uservice.get(userID); // verifica la existencia del usuario
+
 		ObjectMapper mapper = new ObjectMapper();
 		PostDto dto;
 		try {

@@ -1,0 +1,29 @@
+<div class="card" *ngIf="post">
+  <div class="post-header">
+    <span>{{ post.creator.name + ' ' + post.creator.lastname }}</span>
+    <button (click)="deletePost()"><i class="fas fa-trash"></i></button>
+  </div>
+  <div class="post-content">
+    <span>{{ post.content }}</span>
+    <img *ngIf="post.images.length !== 0" [src]="getImage(post)" />
+  </div>
+</div>
+<div class="card comments">
+  <div class="post-header">
+    <span>Comments</span>
+  </div>
+  <div class="comment-container">
+    <div *ngFor="let c of post.comments">
+      <div class="post-header">
+        <span>{{ c.user.name + ' ' + c.user.lastname }}</span>
+      </div>
+      <div class="post-content">
+        <span>{{ c.comment }}</span>
+      </div>
+    </div>
+    <div>
+      <input [(ngModel)]="newComment"/>
+      <button class="accent-btn" (click)="createComment(post)"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+</div>

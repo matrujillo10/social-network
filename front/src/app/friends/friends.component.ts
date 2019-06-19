@@ -22,9 +22,16 @@ export class FriendsComponent implements OnInit {
     this.route.parent.url.subscribe((urlPath) => {
       const id = urlPath[urlPath.length - 1].path;
       if (id !== 'me') {
-        this.myProfile = false;
-        this.currentUser = this.session.seeingUser;
-        this.seeAllFriends(this.currentUser);
+        this.session.getSeeingProfile()
+          .subscribe(u => {
+            this.currentUser = u;
+            this.seeAllFriends(this.currentUser);
+            this.session
+              .getSession()
+              .subscribe((u: User) => {
+                this.myProfile = '' + u.id === id;
+              })
+          })
       }
       else {
         this.session
@@ -38,7 +45,7 @@ export class FriendsComponent implements OnInit {
   }
 
   seeAllFriends(user: User): void {
-    if (this.currState !== 0) {
+    if (this.currState !== 0 && user) {
       this.friendsService.getFriends(user.id)
         .subscribe(friends => {
           this.showingFriends = friends.map(f => ({ ...f, accepted: 1 }));

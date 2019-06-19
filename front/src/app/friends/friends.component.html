@@ -15,14 +15,14 @@
   <div id="friends-container">
     <div *ngFor="let f of showingFriends" class="friend-item">
       {{ f.accepted }} {{ f.name }} {{ f.lastname }}
-      <button class="accent-btn">See Profile</button>
+      <button class="accent-btn" routerLink="/profile/{{f.id}}/wall">See Profile</button>
       <button class="accent-btn" *ngIf="!f.accepted" (click)="deleteRequest(f.id)">
         Cancel Request
       </button>
-      <button class="accent-btn" *ngIf="f.accepted" (click)="deleteRequest(f.id)">
+      <button class="accent-btn" *ngIf="f.accepted && myProfile" (click)="deleteRequest(f.id)">
         Remove Friend
       </button>
-      <button class="accent-btn" *ngIf="!f.accepted" (click)="acceptRequest(f.id)">
+      <button class="accent-btn" *ngIf="!f.accepted && currState === 2" (click)="acceptRequest(f.id)">
         Accept Request
       </button>
     </div>

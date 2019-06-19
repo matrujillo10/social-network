@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { User, Friendship } from '../models';
 import { SessionService } from '../session.service';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-import { Location } from '@angular/common';
-import { log } from 'util';
 import { FriendsService } from '../friends.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-profile',
@@ -21,7 +20,8 @@ export class ProfileComponent implements OnInit {
     private session: SessionService,
     private route: ActivatedRoute,
     private router: Router,
-    private friendship: FriendsService) { }
+    private friendship: FriendsService,
+    private location: Location) { }
 
   ngOnInit() {
 
@@ -34,6 +34,15 @@ export class ProfileComponent implements OnInit {
       else {
         this.session.getProfile(+id).subscribe(u => this.profile = u);
         this.isMe = false;
+      }
+      const reg = new RegExp('^/profile/(me|[0-9]+)(/wall|)$', 'g');
+      const res = this.location.path().match(reg);
+
+      if (res && res.length !== 0) {
+        this.router.navigateByUrl(`/profile/${id}/wall`);
+      }
+      else {
+        this.router.navigateByUrl(`/profile/${id}/friends`);
       }
     };
 
@@ -50,7 +59,7 @@ export class ProfileComponent implements OnInit {
     this.session.getSession()
       .subscribe(me => {
         this.friendship.create(me.id, this.profile.id)
-        .subscribe(f => this.friends = 1);
+          .subscribe(f => this.friends = 1);
       });
   }
 }

@@ -16,7 +16,7 @@ const httpOptions = {
 export class SessionService {
 
   api = 'http://localhost:8080';
-  sessionUser: User;
+  sessionUser: User = JSON.parse(localStorage.getItem('currentUser'));
   seeingUser: User;
 
   constructor(private http: HttpClient) { }
@@ -24,7 +24,10 @@ export class SessionService {
   login(email: string, password: string): Observable<User> {
     return this.http.post<User>(`${this.api}/login`, { email, password }, httpOptions)
       .pipe(
-        tap(profiles => this.sessionUser = profiles),
+        tap(profiles => {
+          this.sessionUser = profiles;
+          localStorage.setItem('currentUser', JSON.stringify(this.sessionUser));
+        }),
         catchError(this.handleError<User>('getProfile', undefined))
       );
   }
@@ -32,9 +35,18 @@ export class SessionService {
   signup(user: User): Observable<User> {
     return this.http.post<User>(`${this.api}/users`, user, httpOptions)
       .pipe(
-        tap(profiles => this.sessionUser = profiles),
+        tap(profiles => {
+          this.sessionUser = profiles;
+          localStorage.setItem('currentUser', JSON.stringify(this.sessionUser));
+        }),
         catchError(this.handleError<User>('getProfile', undefined))
       );
+  }
+
+  logout() {
+    this.sessionUser = undefined;
+    this.seeingUser = undefined;
+    localStorage.removeItem('currentUser');
   }
 
   getSession(): Observable<User> {
@@ -61,6 +73,20 @@ export class SessionService {
         tap(u => this.seeingUser = u),
         catchError(this.handleError<User>('getProfile', undefined))
       );
+  }
+
+  editProfile(nUser: User): Observable<User> {
+    return this.http.put<User>(`${this.api}/users/${this.sessionUser.id}`, nUser, httpOptions)
+      .pipe(
+        tap(u => {
+          this.sessionUser = u;
+          localStorage.setItem('currentUser', JSON.stringify(this.sessionUser));
+        })
+      );
+  }
+
+  changePassword(oldPassword: string, newPassword: string): Observable<User> {
+    return this.http.put<User>(`${this.api}/users/${this.sessionUser.id}/password`, { oldPassword, newPassword }, httpOptions);
   }
 
   private handleError<T>(operation = 'operation', result?: T) {

@@ -56,6 +56,7 @@ public class CommentControler {
 	public @ResponseBody CommentDto create(@PathVariable("postID") Integer id, @RequestBody CommentDto dto) {
 		PostDto postDto = PostDto.model2dto(pservice.get(id));
 		List<CommentDto> comments = postDto.getComments();
+		dto.setPost(postDto);
 		comments.add(dto);
 		postDto.setComments(comments);
 		return CommentDto.model2dto(service.create(dto2model(dto)));

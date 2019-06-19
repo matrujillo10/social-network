@@ -1,7 +1,7 @@
 <div *ngIf="profile" id="profile">
   <div id="profile-header">
     <h1>{{ profile.name }} {{ profile.lastname }}</h1>
-    <button class="accent-btn" (click)="sendRequest()" *ngIf="!isMe">&#x2b;</button>
+    <button class="accent-btn" [style.padding]="'10px 12px'" (click)="sendRequest()" *ngIf="!isMe"><i class="fas fa-user-plus"></i></button>
     <div>
       <span id="about-me">{{ profile.aboutMe }}</span>
       <span>{{ profile.email }}</span>

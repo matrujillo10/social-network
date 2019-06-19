@@ -18,27 +18,31 @@ export class ImageSnippet {
 export class WallComponent implements OnInit {
 
   currentUser: User;
-  posts: Post[];
+  posts: Post[] = [];
 
   newPost: string;
   selectedFile: ImageSnippet;
+  selectedFilter = 0;
 
   showModal = false;
 
   constructor(private session: SessionService, private wallService: WallService, private route: ActivatedRoute) { }
 
   ngOnInit() {
-
     this.route.parent.url.subscribe((urlPath) => {
       const id = urlPath[urlPath.length - 1].path;
 
       if (id !== 'me') {
-        this.session.getSeeingProfile().subscribe(u => {
-          this.currentUser = u;
-          if (this.currentUser) {
-            this.fetchPosts(this.currentUser);
-          }
-        });
+        setTimeout(() => {
+          this.session
+            .getSeeingProfile()
+            .subscribe(u => {
+              this.currentUser = u;
+              if (this.currentUser) {
+                this.fetchPosts(this.currentUser);
+              }
+            });
+        }, 100);
       }
       else {
         this.session
@@ -70,7 +74,7 @@ export class WallComponent implements OnInit {
       ]
     };
 
-    this.wallService.createPost(this.session.sessionUser.id, post, this.selectedFile.file)
+    this.wallService.createPost(this.session.sessionUser.id, post, this.selectedFile && this.selectedFile.file)
       .subscribe(p => {
         this.closeModal();
         this.fetchPosts(this.currentUser);
@@ -93,5 +97,21 @@ export class WallComponent implements OnInit {
   closeModal() {
     this.newPost = '';
     this.showModal = false;
+  }
+
+  deletePost(post: Post, index: number) {
+    return () => {
+      this.session.getSession()
+        .subscribe((s: User) => {
+          this.wallService.deletePost(s.id, post.id)
+            .subscribe(_ => {
+              this.posts.splice(index, 1);
+            });
+        });
+    }
+  }
+
+  selectFilter(filter: number) {
+    this.selectedFilter = filter;
   }
 }

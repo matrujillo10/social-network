@@ -1,36 +1,15 @@
 <div id="wall-container">
-  <button
-    id="add-post-container"
-    (click)="openModal()"
-    [class.empty]="(posts && posts.length === 0)">
+  <button id="add-post-container" (click)="openModal()" [class.empty]="posts && posts.length === 0">
     &#x2b;
   </button>
-  <div *ngIf="posts" id="wall">
-    <div *ngFor="let p of posts">
-      <div class="card">
-        <div class="post-header">
-          <span>{{ p.creator.name + ' ' + p.creator.lastname }}</span>
-        </div>
-        <div class="post-content">
-          {{ p.content }}
-        </div>
-      </div>
-      <div class="card comments">
-        <div class="post-header">
-          <span>Comments</span>
-        </div>
-        <div class="comment-container">
-          <div *ngFor="let c of p.comments">
-            <div class="post-header">
-              <span>{{ c.user.name + ' ' + c.user.lastname }}</span>
-            </div>
-            <div class="post-content">
-              <span>{{ c.comment }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
+  <div *ngIf="posts.length !== 0" id="wall">
+    <div *ngFor="let p of posts; let i = index">
+      <app-post [post]="p" [currentUser]="currentUser" [deletePost]="deletePost(p, i)"></app-post>
     </div>
+  </div>
+  <div *ngIf="currentUser && posts.length === 0" id="no-posts">
+    <span>{{currentUser.name}} doesn't have posts yet.</span>
+    <span>Be the first to publish in this wall!</span>
   </div>
   <div *ngIf="!currentUser">
     Loading...
@@ -47,6 +26,12 @@
     <textarea [(ngModel)]="newPost"></textarea>
 
     <input #imageinput type="file" accept="image/*" (change)="processImage(imageinput)" />
+    <div id="filters">
+      <button (click)="selectFilter(0)" [class.active]="selectedFilter===0" class="accent-btn"><i class="fas fa-eye-slash"></i></button>
+      <button (click)="selectFilter(1)" [class.active]="selectedFilter===1" class="accent-btn">F1</button>
+      <button (click)="selectFilter(2)" [class.active]="selectedFilter===2" class="accent-btn">F2</button>
+      <button (click)="selectFilter(3)" [class.active]="selectedFilter===3" class="accent-btn">F3</button>
+    </div>
 
     <button class="accent-btn" (click)="createPost(currentUser)">
       Post

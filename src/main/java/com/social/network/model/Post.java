@@ -2,6 +2,8 @@ package com.social.network.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -39,6 +41,7 @@ public class Post implements Serializable {
 	private List<Image> images;
 
 	public Post() {
+		this.comments = new ArrayList<>();
 	}
 
 	public int getId() {

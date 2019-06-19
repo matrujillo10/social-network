@@ -4,6 +4,12 @@ export interface Image {
   filter?: number;
 }
 
+export interface Comment {
+  id?: number;
+  comment: string;
+  user: User;
+}
+
 export interface Post {
   id?: number;
   content: string;
@@ -11,13 +17,6 @@ export interface Post {
   recipient: User;
   comments: Comment[];
   images: Image[];
-}
-
-export interface Comment {
-  id?: number;
-  comment: string;
-  user: User;
-  post?: Post;
 }
 
 export interface Friendship {

@@ -14,7 +14,7 @@ const routes: Routes = [
     ]
   },
   { path: 'feed', component: FeedComponent },
-  { path: '', redirectTo: '/profile', pathMatch: 'full' },
+  { path: '', redirectTo: 'profile/me/wall', pathMatch: 'full' },
 ];
 
 @NgModule({

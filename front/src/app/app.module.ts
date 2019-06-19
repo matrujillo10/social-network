@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { WallComponent } from './wall/wall.component';
 import { FriendsComponent } from './friends/friends.component';
 import { PeopleComponent } from './people/people.component';
+import { PostComponent } from './post/post.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { PeopleComponent } from './people/people.component';
     FeedComponent,
     WallComponent,
     FriendsComponent,
-    PeopleComponent
+    PeopleComponent,
+    PostComponent
   ],
   imports: [
     BrowserModule,

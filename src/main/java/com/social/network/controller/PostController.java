@@ -140,6 +140,7 @@ public class PostController {
 		for (ImageDto i : dto.getImages()) {
 			Image image = new Image();
 			image.setPath(i.getPath());
+			image.setPost(model);
 			images.add(image);
 		}
 		model.setImages(images);

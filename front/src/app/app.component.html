@@ -13,7 +13,11 @@
       </div>
       <div id="options">
         <button routerLink="/profile/me">Profile</button>
-        <button routerLink="/feed">Feed</button>
+        <!-- <button routerLink="/feed">Feed</button> -->
+      </div>
+      <div id="acc-opts">
+        <button class="accent-btn" (click)="doEditProfile()">Edit profile</button>
+        <button class="accent-btn" (click)="logOut()">Log out</button>
       </div>
     </div>
   </div>
@@ -66,8 +70,32 @@
   <div id="modal-content">
     <div>
       <div *ngFor="let p of listPeople" class="found">
-        <div routerLink="/profile/{{ p.id }}" (click)="closeModal()">{{ p.name }} {{ p.lastname }}</div>
+        <div routerLink="/profile/{{ p.id }}" (click)="closeModal()">
+          <span>{{ p.name }} {{ p.lastname }}</span>
+        </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-bg" *ngIf="isEditProfile"></div>
+<div id="modal-container" *ngIf="isEditProfile">
+  <div id="modal-header" class="edit">
+    <h3>Edit Profile</h3>
+    <button (click)="closeModal()">&times;</button>
+  </div>
+  <div id="modal-content" class="editContent">
+    <div class="login-box">
+      <input [(ngModel)]="user.name" type="text" placeholder="name" />
+      <input [(ngModel)]="user.lastname" type="text" placeholder="lastname" />
+      <input [(ngModel)]="user.email" type="email" placeholder="email" />
+      <input [(ngModel)]="user.password" type="password" placeholder="old password" />
+      <input [(ngModel)]="newPassword" type="password" placeholder="new password" />
+      <input [(ngModel)]="user.phone" type="tel" placeholder="phone" />
+      <input [(ngModel)]="user.birthday" type="date" placeholder="birthday" />
+      <textarea [(ngModel)]="user.aboutMe" placeholder="aboutme"></textarea>
+
+      <button class="action-btn" (click)="editProfile()">Edit</button>
     </div>
   </div>
 </div>

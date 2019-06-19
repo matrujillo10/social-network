@@ -1,0 +1,93 @@
+.card {
+  margin: 20px 20% 0;
+  box-shadow: 0 1px 10px -5px black;
+  padding: 20px;
+  position: relative;
+  background-color: white;
+  z-index: 10;
+  border-radius: 10px;
+}
+
+.card:first-child {
+  background-color: var(--secondary);
+}
+
+.card.comments {
+  margin: 0px 23%;
+  z-index: 5;
+  border-radius: 0 0 10px 10px;
+}
+
+.card > .post-header {
+  border-bottom: 1px solid lightgray;
+  padding: 5px;
+  color: white;
+  position: relative;
+}
+
+.card > .post-header > button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background-color: transparent;
+  border: transparent;
+  color: white;
+}
+
+.card > .post-header > button:hover{
+  color: red;
+}
+
+.card.comments > .post-header {
+  color: gray;
+  text-align: center;
+}
+
+.card > .post-header > span {
+  font-weight: bold;
+}
+
+.card > .comment-container > div > .post-header > span {
+  color: gray;
+  font-size: 1em;
+}
+
+.card > .post-content {
+  padding: 5px;
+  color: white;
+  position: relative;
+}
+
+.card > .post-content > img {
+  width: 100%;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.card > .post-content > span {
+  display: block;
+  padding: 20px 0;
+}
+
+.card > .comment-container > div {
+  padding: 20px 10px 0;
+}
+
+.card > .comment-container > div > .post-content {
+  padding: 5px 30px;
+}
+
+.card > .comment-container > div > input {
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  padding: 5px 10px;
+  margin-top: 10px;
+  outline: none;
+  width: calc(100% - 60px);
+}
+
+.card > .comment-container > div > button {
+  border-radius: 50%;
+  position: relative;
+  left: -25px;
+}

@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { User, Post } from './models';
-import { ImageSnippet } from './wall/wall.component';
+import { User, Post, Comment } from './models';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -26,13 +25,25 @@ export class WallService {
   }
 
   createPost(userId: number, post: Post, image: File): Observable<Post> {
-    console.log(image, typeof image);
-    
     const formData = new FormData();
     formData.append('post', JSON.stringify(post));
     formData.append('images', image);
 
     return this.http.post<Post>(`${this.api}/users/${userId}/posts`, formData);
+  }
+
+  getImage(filename: string): string {
+    return `${this.api}/downloadFile/${filename}`;
+  }
+
+  createComment(postID: number, from: User, comment: string): Observable<Comment> {
+    console.log(comment);
+
+    return this.http.post<Comment>(`${this.api}/posts/${postID}/comments`, { user: from, comment }, httpOptions);
+  }
+
+  deletePost(userID: number, id: number): Observable<Post> {
+    return this.http.delete<Post>(`${this.api}/users/${userID}/posts/${id}`);
   }
 
   private handleError<T>(operation = 'operation', result?: T) {

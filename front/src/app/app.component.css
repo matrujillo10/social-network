@@ -66,6 +66,7 @@
   display: grid;
 }
 
+#modal-content > .login-box > button,
 #content.no-user > .login-box > button {
   background-color: white;
   color: var(--accent);
@@ -74,11 +75,13 @@
   display: block;
 }
 
+#modal-content > .login-box > button:hover,
 #content.no-user > .login-box > button:hover {
   background-color: var(--accent);
   color: white;
 }
 
+#modal-content > .login-box > h4,
 #content.no-user > .login-box > h4 {
   margin: 10px;
   color: white;
@@ -88,12 +91,14 @@
   width: 40%;
 }
 
+#modal-content > .login-box > .log-header,
 #content.no-user > .login-box > .log-header {
   text-align: center;
   padding-bottom: 15px;
   color: white;
 }
 
+#modal-content > .login-box > .log-header > button.back-btn,
 #content.no-user > .login-box > .log-header > button.back-btn {
   background-color: transparent;
   border: 1px solid transparent;
@@ -102,11 +107,14 @@
   top: 10px;
   left: 10px;
 }
+#modal-content > .login-box > textarea,
 #content.no-user > .login-box.big > textarea {
   height: 80px;
   padding: 5px;
+  resize: none;
 }
 
+#modal-content > .login-box > input,
 #content.no-user > .login-box > input {
   border: 0;
   padding: 5px;
@@ -114,6 +122,7 @@
   text-align: center;
 }
 
+#modal-content > .login-box > button.action-btn,
 #content.no-user > .login-box > button.action-btn {
   margin-top: 10px;
 }
@@ -126,7 +135,8 @@
 
 #content > div:first-child > div {
   position: fixed;
-  width: calc(20% - 38px);
+  width: 16.66%;
+  height: calc(100% - 50px);
 }
 
 #content > div:first-child > div > #profile > div {
@@ -154,10 +164,45 @@
 
 .found {
   border: 1px solid lightgray;
-  padding: 10px;
   cursor: pointer;
+  padding: 5px;
+}
+.found > div > span {
+  padding: 10px 0;
 }
 
 .found:hover {
   background-color: lightgray;
+}
+
+#content > div:first-child > div > #acc-opts {
+  position: absolute;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+}
+
+#modal-container > #modal-content > .login-box {
+  display: grid;
+}
+
+#modal-container > #modal-header.edit {
+  padding: 0;
+}
+
+#modal-container > #modal-content.editContent > .login-box > input {
+  border: 1px solid lightgray;
+  margin: 5px 0;
+}
+
+#modal-container > #modal-content.editContent > .login-box > button {
+  border: 1px solid var(--accent);
+  color: white;
+  background-color: var(--accent);
+}
+
+#modal-container > #modal-content.editContent > .login-box > button:hover {
+  background-color: white;
+  color: var(--accent);
 }

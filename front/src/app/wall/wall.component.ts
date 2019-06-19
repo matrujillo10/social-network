@@ -69,7 +69,8 @@ export class WallComponent implements OnInit {
       content: this.newPost,
       images: [
         {
-          path: file
+          path: file,
+          filter: this.selectedFilter !== 0 ? this.selectedFilter : null
         }
       ]
     };

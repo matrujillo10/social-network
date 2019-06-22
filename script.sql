@@ -32,7 +32,7 @@ CREATE TABLE `friendship`
 
 -- ************************************** `POST`
 
-CREATE TABLE `post`
+CREATE TABLE `POST`
 (
  `ID`           integer NOT NULL AUTO_INCREMENT ,
  `CONTENT`      varchar(255) NOT NULL ,
@@ -61,7 +61,7 @@ CREATE TABLE `image`
 
   PRIMARY KEY (`ID`),
   KEY `fkIdx_69` (`POST_ID`),
-  CONSTRAINT `FK_69` FOREIGN KEY `fkIdx_69` (`POST_ID`) REFERENCES `post` (`ID`)
+  CONSTRAINT `FK_69` FOREIGN KEY `fkIdx_69` (`POST_ID`) REFERENCES `POST` (`ID`)
 );
 
 
@@ -76,7 +76,7 @@ CREATE TABLE `comment`
 
   PRIMARY KEY (`ID`),
   KEY `fkIdx_66` (`POST_ID`),
-  CONSTRAINT `FK_66` FOREIGN KEY `fkIdx_66` (`POST_ID`) REFERENCES `post` (`ID`),
+  CONSTRAINT `FK_66` FOREIGN KEY `fkIdx_66` (`POST_ID`) REFERENCES `POST` (`ID`),
   KEY `fkIdx_72` (`USER_ID`),
   CONSTRAINT `FK_72` FOREIGN KEY `fkIdx_72` (`USER_ID`) REFERENCES `user` (`ID`)
 );

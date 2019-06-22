@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { User, Post, Friend } from './models';
+import { environment } from '../environments/environment';
 
 
 const httpOptions = {
@@ -16,7 +17,7 @@ const httpOptions = {
 })
 export class FriendsService {
 
-  api = 'http://localhost:8080';
+  api = environment.API;
 
   constructor(private http: HttpClient) { }
 

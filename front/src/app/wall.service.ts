@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { User, Post, Comment } from './models';
+import { environment } from 'src/environments/environment';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -15,7 +16,7 @@ const httpOptions = {
 })
 export class WallService {
 
-  api = 'http://localhost:8080';
+  api = environment.API;
 
   constructor(private http: HttpClient) { }
 

@@ -24,9 +24,9 @@ export class AppComponent {
   };
 
   constructor(private session: SessionService, private router: Router) {
-    this.form.login.email = 'dn@mail.com';
-    this.form.login.password = '1234';
-    this.session.getSession().subscribe(u => this.user = JSON.parse(JSON.stringify(u)));
+    // this.form.login.email = 'dn@mail.com';
+    // this.form.login.password = '1234';
+    // this.session.getSession().subscribe(u => this.user = JSON.parse(JSON.stringify(u)));
   }
 
   ngOnInit() {

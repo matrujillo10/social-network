@@ -116,7 +116,6 @@ __webpack_require__.r(__webpack_exports__);
 
 var AppComponent = /** @class */ (function () {
     function AppComponent(session, router) {
-        var _this = this;
         this.session = session;
         this.router = router;
         this.state = 0;
@@ -127,9 +126,9 @@ var AppComponent = /** @class */ (function () {
             login: { email: '', password: '' },
             signup: { name: '', lastname: '', email: '', birthday: new Date(), aboutMe: '', password: '', phone: '' }
         };
-        this.form.login.email = 'dn@mail.com';
-        this.form.login.password = '1234';
-        this.session.getSession().subscribe(function (u) { return _this.user = JSON.parse(JSON.stringify(u)); });
+        // this.form.login.email = 'dn@mail.com';
+        // this.form.login.password = '1234';
+        // this.session.getSession().subscribe(u => this.user = JSON.parse(JSON.stringify(u)));
     }
     AppComponent.prototype.ngOnInit = function () {
         if (!this.user) {
@@ -1190,7 +1189,7 @@ __webpack_require__.r(__webpack_exports__);
 // The list of file replacements can be found in `angular.json`.
 var environment = {
     production: false,
-    API: 'http://34.67.232.144/social-network-0.1'
+    API: 'http://34.67.232.144:8080/social-network-0.1'
 };
 /*
  * For easier debugging in development mode, you can import the following file

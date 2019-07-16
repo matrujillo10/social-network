@@ -35,6 +35,8 @@ import com.social.network.model.User;
 import com.social.network.service.PostService;
 import com.social.network.service.SocketClient;
 import com.social.network.service.UserService;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @RestController
 public class PostController {
@@ -147,12 +149,15 @@ public class PostController {
 		return model;
 	}
 
-	
+
 	private ImageDto uploadFile(MultipartFile file, PostDto dto) {
 		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 		ImageDto image = null;
 		for (ImageDto i : dto.getImages()) {
 			if (i.getPath().contains(fileName)) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+                		fileName = fileName.split("\\.")[0] + "-" + sdf.format(new Date()) + "." + fileName.split("\\.")[1];
+				i.setPath(fileName);
 				image = i;
 				break;
 			}
@@ -163,10 +168,10 @@ public class PostController {
 		try {
 			Path fileStorageLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
 			Path targetLocation = fileStorageLocation.resolve(fileName);
-			Files.copy(file.getInputStream(), 
-					targetLocation, 
+			Files.copy(file.getInputStream(),
+					targetLocation,
 					StandardCopyOption.REPLACE_EXISTING);
-			String outputPath = uploadDir + fileName; 
+			String outputPath = uploadDir + fileName;
 			if (image.getFilter() != null && !image.getFilter().isEmpty()) {
 				String[] f = fileName.split("\\.");
 				String command = uploadDir+";;;;"

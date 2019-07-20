@@ -1,5 +1,7 @@
 package com.social.network.service;
 
+import static java.util.Collections.emptyList;
+
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
@@ -11,6 +13,10 @@ import java.util.Optional;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.social.network.dto.PasswordUpdateDto;
@@ -20,18 +26,25 @@ import com.social.network.exception.LoginException;
 import com.social.network.exception.PasswordUpdateException;
 import com.social.network.exception.ServerErrorException;
 import com.social.network.model.User;
+
 import com.social.network.repository.UserRepository;
 
 @Service
-public class UserService implements IService<User, Integer> {
+public class UserService implements UserDetailsService, IService<User, Integer> {
 	@Autowired
 	private UserRepository repository;
+	@Autowired
+	private BCryptPasswordEncoder bcrypt;
 	
 	public User login(String email, String password) throws LoginException {
 		User user = repository.login(email, DigestUtils.sha256Hex(password));
 		if (user == null)
 			throw new LoginException();
 		return user;
+	}
+	
+	public boolean areFriends(int uID1, int uID2) {
+		return repository.findFriend(uID1, uID2) != null;
 	}
 
 	@Override
@@ -57,16 +70,16 @@ public class UserService implements IService<User, Integer> {
 		if (repository.findByEmail(model.getEmail()) != null) {
 			throw new EntityAlreadyExistsException();
 		}
-		model.setPassword(DigestUtils.sha256Hex(model.getPassword()));
+		model.setPassword(bcrypt.encode(model.getPassword()));
 		return repository.save(model);
 	}
 	
 	public User updatePassword(Integer id, PasswordUpdateDto dto) {
 		User old = get(id);
-		if (!DigestUtils.sha256Hex(dto.getOldPassword()).equals(old.getPassword())) {
+		if (!bcrypt.matches(dto.getOldPassword(), old.getPassword())) {
 			throw new PasswordUpdateException();
 		}
-		old.setPassword(DigestUtils.sha256Hex(dto.getNewPassword()));
+		old.setPassword(bcrypt.encode(dto.getNewPassword()));
 		return repository.save(old);
 	}
 
@@ -74,7 +87,7 @@ public class UserService implements IService<User, Integer> {
 	public User update(Integer id, User model) throws EntityNotFoundException {
 		User old = get(id);
 		if (model.getPassword() != null) {
-			model.setPassword(DigestUtils.sha256Hex(model.getPassword()));
+			model.setPassword(bcrypt.encode(model.getPassword()));
 		}
 		// Se definen los campos que pueden ser nulos. El serialVersionUID es obligatorio acá
 		String[] nullables = new String[] {"serialVersionUID"};
@@ -105,5 +118,18 @@ public class UserService implements IService<User, Integer> {
 		User user = get(id);
 		repository.delete(user);
 		return user;
+	}
+	
+	public User findByEmail(String username) {
+		return repository.findByEmail(username);
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = repository.findByEmail(username);
+		if (user == null) {
+			throw new UsernameNotFoundException(username);
+		}
+		return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), emptyList());
 	}
 }

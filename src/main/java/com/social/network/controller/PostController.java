@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,11 +25,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.social.network.dto.ImageDto;
 import com.social.network.dto.PostDto;
 import com.social.network.dto.UserDto;
 import com.social.network.exception.EntityNotFoundException;
 import com.social.network.exception.ServerErrorException;
+import com.social.network.exception.UnauthorizedException;
 import com.social.network.model.Image;
 import com.social.network.model.Post;
 import com.social.network.model.User;
@@ -59,7 +62,12 @@ public class PostController {
 	 * @return todos los post del muro.
 	 */
 	@GetMapping(value = "/wall/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public @ResponseBody List<PostDto> getWall(@PathVariable("id") Integer id) {
+	public @ResponseBody List<PostDto> getWall(
+			Authentication authentication, 
+			@PathVariable("id") Integer id) {
+		int userID = Integer.parseInt(authentication.getPrincipal().toString());
+		if (userID != id && !uservice.areFriends(userID, id))
+			throw new UnauthorizedException();
 		uservice.get(id); // verifica la existencia del usuario
 		List<PostDto> dtos = new ArrayList<>();
 		for (Post model : service.getWall(id)) {
@@ -76,8 +84,12 @@ public class PostController {
 	@GetMapping(value = "/users/{userID}/posts/{id}", 
 			produces = {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody PostDto get(
+			Authentication authentication, 
 			@PathVariable("userID") Integer userID,
 			@PathVariable("id") Integer id) {
+		int uid = Integer.parseInt(authentication.getPrincipal().toString());
+		if (uid != userID && !uservice.areFriends(userID, uid))
+			throw new UnauthorizedException();
 		User user = uservice.get(userID); // verifica la existencia del usuario
 		Post post = service.get(id);
 		if (user.getId() != post.getRecipient().getId()) {
@@ -97,36 +109,37 @@ public class PostController {
 			consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
 			produces = {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody PostDto create(
+			Authentication authentication, 
 			@PathVariable("userID") Integer userID,
 			@RequestParam("post") String json,
 			@RequestParam("images") MultipartFile[] files) {
 		User user = uservice.get(userID); // verifica la existencia del usuario
-
-		ObjectMapper mapper = new ObjectMapper();
-		PostDto dto;
-		try {
-			dto = mapper.readValue(json, PostDto.class);
-			List<ImageDto> images = Arrays.asList(files)
-					.stream()
-					.map(file -> uploadFile(file, dto))
-					.collect(Collectors.toList());
-			dto.setCreator(UserDto.model2dto(user));
-			dto.setImages(images);
-			return PostDto.model2dto(service.create(dto2model(dto)));
-		} catch (IOException e) {
-			throw new ServerErrorException();
-		}
+		PostDto dto = new Gson().fromJson(json, PostDto.class);
+		int uid = Integer.parseInt(authentication.getPrincipal().toString());
+		if (uid != userID && !uservice.areFriends(userID, dto.getRecipient().getId()))
+			throw new UnauthorizedException();
+		List<ImageDto> images = Arrays.asList(files)
+				.stream()
+				.map(file -> uploadFile(uid, file, dto))
+				.collect(Collectors.toList());
+		dto.setCreator(UserDto.model2dto(user));
+		dto.setImages(images);
+		return PostDto.model2dto(service.create(dto2model(dto)));
 	}
 
 
 	@DeleteMapping(value = "/users/{userID}/posts/{id}", 
 			produces = {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody PostDto delete(
+			Authentication authentication, 
 			@PathVariable("userID") Integer userID,
 			@PathVariable("id") Integer id){
 		User user = uservice.get(userID); // verifica la existencia del usuario
 		Post post = service.get(id);
-		if (user.getId() != post.getRecipient().getId()) {
+		int uid = Integer.parseInt(authentication.getPrincipal().toString());
+		if (uid != post.getRecipient().getId() && uid != post.getCreator().getId())
+			throw new UnauthorizedException();
+		if (user.getId() != post.getRecipient().getId() && user.getId() != post.getCreator().getId()) {
 			throw new EntityNotFoundException();
 		}
 		return PostDto.model2dto(service.remove(id));
@@ -150,13 +163,20 @@ public class PostController {
 	}
 
 
-	private ImageDto uploadFile(MultipartFile file, PostDto dto) {
-		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+	private ImageDto uploadFile(int uid, MultipartFile file, PostDto dto) {
+		String oldFileName = StringUtils.cleanPath(file.getOriginalFilename());
+		String[] fn = oldFileName.split("\\.");
+		String fileName = uid + "-";
+		for (int i = 0; i < fn.length - 1; i++) {
+			fileName += fn[i];
+		}
+		fileName.replaceAll(";", "");
+		String extension = "." + fn[fn.length-1];
 		ImageDto image = null;
 		for (ImageDto i : dto.getImages()) {
-			if (i.getPath().contains(fileName)) {
+			if (i.getPath().contains(oldFileName)) {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-                		fileName = fileName.split("\\.")[0] + "-" + sdf.format(new Date()) + "." + fileName.split("\\.")[1];
+				fileName = fileName + "-" + sdf.format(new Date()) + extension;
 				i.setPath(fileName);
 				image = i;
 				break;
@@ -173,10 +193,9 @@ public class PostController {
 					StandardCopyOption.REPLACE_EXISTING);
 			String outputPath = uploadDir + fileName;
 			if (image.getFilter() != null && !image.getFilter().isEmpty()) {
-				String[] f = fileName.split("\\.");
 				String command = uploadDir+";;;;"
-						+ f[0] + ";;;;"
-						+ "."+f[1] + ";;;;"
+						+ fileName + ";;;;"
+						+ extension + ";;;;"
 						+ image.getFilter();
 				outputPath = new SocketClient(add, port).process(command);
 			}

@@ -1,15 +1,23 @@
 package com.social.network.dto;
 
 public class LoginDto {
-	private String email;
-	private String password;
+	private String username;
+	private String password;	
 	
-	public String getEmail() {
-		return email;
+	public LoginDto() {}
+	
+	public LoginDto(String username, String password) {
+		super();
+		this.username = username;
+		this.password = password;
+	}
+
+	public String getUsername() {
+		return username;
 	}
 	
-	public void setEmail(String email) {
-		this.email = email;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	
 	public String getPassword() {

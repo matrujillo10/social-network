@@ -22,8 +22,8 @@ export class SessionService {
 
   constructor(private http: HttpClient) { }
 
-  login(email: string, password: string): Observable<User> {
-    return this.http.post<User>(`${this.api}/login`, { email, password }, httpOptions)
+  login(username: string, password: string): Observable<User> {
+    return this.http.post<User>(`${this.api}/login`, { username, password }, httpOptions)
       .pipe(
         tap(profiles => {
           this.sessionUser = profiles;
@@ -59,8 +59,8 @@ export class SessionService {
     return of(this.seeingUser);
   }
 
-  getPeople(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.api}/users`)
+  getPeople(name): Observable<User[]> {
+    return this.http.get<User[]>(`${this.api}/users?name=${name}`)
       .pipe(catchError(this.handleError<User[]>('getProfile', undefined)));
   }
 

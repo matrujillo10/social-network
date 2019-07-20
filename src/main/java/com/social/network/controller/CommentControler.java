@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,6 +17,7 @@ import com.social.network.dto.CommentDto;
 import com.social.network.dto.ImageDto;
 import com.social.network.dto.PostDto;
 import com.social.network.dto.UserDto;
+import com.social.network.exception.UnauthorizedException;
 import com.social.network.model.Comment;
 import com.social.network.model.Image;
 import com.social.network.model.Post;
@@ -36,8 +37,15 @@ public class CommentControler {
 	private UserService uservice;
 	
 	@GetMapping(value = "/posts/{postID}/comments", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public @ResponseBody List<CommentDto> getByPost(@PathVariable("postID") Integer id){
+	public @ResponseBody List<CommentDto> getByPost(Authentication authentication, @PathVariable("postID") Integer id){
+		int userID = Integer.parseInt(authentication.getPrincipal().toString());
 		Post post = pservice.get(id);
+		if (!(post.getCreator().getId() == userID || 
+				post.getRecipient().getId() == userID ||
+				uservice.areFriends(userID, post.getCreator().getId()) ||
+				uservice.areFriends(userID, post.getRecipient().getId()))) {
+			throw new UnauthorizedException();
+		}
 		List<CommentDto> commentsDto = new ArrayList<CommentDto>();
 		List<Comment> comments = service.getByPost(post);
 		for(int i = 0; i < comments.size(); i++) {
@@ -48,13 +56,17 @@ public class CommentControler {
 		return commentsDto;
 	}
 	
-	// TODO: Hacer el método post únicamente
-	// la ruta debe ser algo como /posts/{postID}/comments
-	// El get no es necesario porque va dentro del post.
-	// Aunque podría hacerse también. Hablar con david para que decida él.
 	@PostMapping(value = "/posts/{postID}/comments", produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE})
-	public @ResponseBody CommentDto create(@PathVariable("postID") Integer id, @RequestBody CommentDto dto) {
-		PostDto postDto = PostDto.model2dto(pservice.get(id));
+	public @ResponseBody CommentDto create(Authentication authentication, @PathVariable("postID") Integer id, @RequestBody CommentDto dto) {
+		int userID = Integer.parseInt(authentication.getPrincipal().toString());
+		Post post = pservice.get(id);
+		if (!(post.getCreator().getId() == userID || 
+				post.getRecipient().getId() == userID ||
+				uservice.areFriends(userID, post.getCreator().getId()) ||
+				uservice.areFriends(userID, post.getRecipient().getId()))) {
+			throw new UnauthorizedException();
+		}
+		PostDto postDto = PostDto.model2dto(post);
 		List<CommentDto> comments = postDto.getComments();
 		dto.setPost(postDto);
 		comments.add(dto);

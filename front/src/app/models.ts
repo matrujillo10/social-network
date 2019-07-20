@@ -35,6 +35,7 @@ export interface User {
   password: string;
   phone: string;
   aboutMe: string;
+  token: string;
 }
 
 export interface Friend extends User {

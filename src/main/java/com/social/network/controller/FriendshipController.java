@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.social.network.dto.FriendshipDto;
 import com.social.network.dto.FriendshipPKDto;
 import com.social.network.dto.UserDto;
+import com.social.network.exception.UnauthorizedException;
 import com.social.network.model.Friendship;
 import com.social.network.model.FriendshipPK;
 import com.social.network.service.FriendshipService;
@@ -35,7 +37,10 @@ public class FriendshipController {
 	 * @return La lista de las amistades aceptadas por él o al que se las envió.
 	 */
 	@GetMapping(value = "/users/{userID}/friendships", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public @ResponseBody List<UserDto> getAll(@PathVariable("userID") Integer userID) {
+	public @ResponseBody List<UserDto> getAll(Authentication authentication, @PathVariable("userID") Integer userID) {
+		int uid = Integer.parseInt(authentication.getPrincipal().toString());
+		if (userID != uid && !userService.areFriends(uid, userID))
+			throw new UnauthorizedException();
 		userService.get(userID); // Verifica que el usuario exista
 		List<UserDto> dtos = new ArrayList<>();
 		for (Friendship model : service.getAllFriendships(userID)) {
@@ -54,7 +59,10 @@ public class FriendshipController {
 	 * @return La lista de las amistades pendientes por aceptar por él.
 	 */
 	@GetMapping(value = "/recipient/{userID}/friendships", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public @ResponseBody List<FriendshipDto> getAllPending(@PathVariable("userID") Integer userID) {
+	public @ResponseBody List<FriendshipDto> getAllPending(Authentication authentication, @PathVariable("userID") Integer userID) {
+		int uid = Integer.parseInt(authentication.getPrincipal().toString());
+		if (userID != uid)
+			throw new UnauthorizedException();
 		userService.get(userID); // Verifica que el usuario exista
 		List<FriendshipDto> dtos = new ArrayList<>();
 		for (Friendship model : service.getAllFriendshipsPendingByRecipient(userID)) {
@@ -70,7 +78,10 @@ public class FriendshipController {
 	 * @return La lista de las amistades enviadas por él que no se han aceptado.
 	 */
 	@GetMapping(value = "/sender/{userID}/friendships", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public @ResponseBody List<FriendshipDto> getAllSent(@PathVariable("userID") Integer userID) {
+	public @ResponseBody List<FriendshipDto> getAllSent(Authentication authentication, @PathVariable("userID") Integer userID) {
+		int uid = Integer.parseInt(authentication.getPrincipal().toString());
+		if (userID != uid)
+			throw new UnauthorizedException();
 		userService.get(userID); // Verifica que el usuario exista
 		List<FriendshipDto> dtos = new ArrayList<>();
 		for (Friendship model : service.getAllFriendshipsSent(userID)) {
@@ -88,8 +99,12 @@ public class FriendshipController {
 	@GetMapping(value = "/users/{fID}/users/{sID}/friendships", 
 			produces = {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody FriendshipDto get(
+			Authentication authentication, 
 			@PathVariable("fID") Integer fID,
 			@PathVariable("sID") Integer sID) {
+		int uid = Integer.parseInt(authentication.getPrincipal().toString());
+		if (fID != uid && sID != uid)
+			throw new UnauthorizedException();
 		return FriendshipDto.model2dto(service.getFriendshipByUsers(fID, sID));
 	}
 	
@@ -101,8 +116,13 @@ public class FriendshipController {
 	 */
 	@PostMapping(value = "/sender/{senderID}/recipient/{recipientID}/friendship", 
 			produces = {MediaType.APPLICATION_JSON_VALUE})
-	public @ResponseBody FriendshipDto create(@PathVariable("senderID") Integer senderID, 
+	public @ResponseBody FriendshipDto create(
+			Authentication authentication,
+			@PathVariable("senderID") Integer senderID, 
 			@PathVariable("recipientID") Integer recipientID) {
+		int uid = Integer.parseInt(authentication.getPrincipal().toString());
+		if (senderID != uid)
+			throw new UnauthorizedException();
 		FriendshipDto dto = new FriendshipDto();
 		FriendshipPKDto id = new FriendshipPKDto();
 		// crea la llave y verifica existencia
@@ -121,8 +141,12 @@ public class FriendshipController {
 	@PutMapping(value = "/sender/{senderID}/recipient/{recipientID}/friendship", 
 			produces = {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody FriendshipDto update(
+			Authentication authentication,
 			@PathVariable("senderID") Integer senderID,
 			@PathVariable("recipientID") Integer recipientID) {
+		int uid = Integer.parseInt(authentication.getPrincipal().toString());
+		if (recipientID != uid)
+			throw new UnauthorizedException();
 		FriendshipPK id = new FriendshipPK();
 		id.setIdSender(senderID);
 		id.setIdRecipient(recipientID);
@@ -140,8 +164,12 @@ public class FriendshipController {
 	@DeleteMapping(value = "/users/{fID}/users/{sID}/friendships", 
 			produces = {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody FriendshipDto delete(
+			Authentication authentication,
 			@PathVariable("fID") Integer fID,
 			@PathVariable("sID") Integer sID) {
+		int uid = Integer.parseInt(authentication.getPrincipal().toString());
+		if (fID != uid && sID != uid)
+			throw new UnauthorizedException();
 		Friendship f = service.getFriendshipByUsers(fID, sID);
 		return FriendshipDto.model2dto(service.remove(f.getId()));
 	}

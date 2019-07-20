@@ -20,7 +20,7 @@ export class AppComponent {
 
   form: { login: { email: string; password: string; }, signup: User } = {
     login: { email: '', password: '' },
-    signup: { name: '', lastname: '', email: '', birthday: new Date(), aboutMe: '', password: '', phone: '' }
+    signup: { name: '', lastname: '', email: '', birthday: new Date(), aboutMe: '', password: '', phone: '', token: '' }
   };
 
   constructor(private session: SessionService, private router: Router) {
@@ -57,14 +57,9 @@ export class AppComponent {
   }
 
   search() {
-    this.session.getPeople().subscribe(people => {
-      people.forEach(p => {
-        if (p.name.toUpperCase().includes(this.friendSearch.toUpperCase())
-          || p.lastname.toUpperCase().includes(this.friendSearch.toUpperCase())
-          || `${p.name} ${p.lastname}`.toUpperCase().includes(this.friendSearch.toUpperCase())) {
-          this.listPeople.push(p);
-        }
-      });
+    this.friendSearch = this.friendSearch == null ? '' : this.friendSearch;
+    this.session.getPeople(this.friendSearch).subscribe(people => {
+      this.listPeople = people;
       this.showModal = true;
       this.friendSearch = '';
     });

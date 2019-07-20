@@ -27,6 +27,8 @@ export class WallService {
 
   createPost(userId: number, post: Post, image: File): Observable<Post> {
     const formData = new FormData();
+    delete post.creator.birthday;
+    delete post.recipient.birthday;
     formData.append('post', JSON.stringify(post));
     formData.append('images', image);
 
@@ -39,7 +41,7 @@ export class WallService {
 
   createComment(postID: number, from: User, comment: string): Observable<Comment> {
     console.log(comment);
-
+    delete from.birthday;
     return this.http.post<Comment>(`${this.api}/posts/${postID}/comments`, { user: from, comment }, httpOptions);
   }
 
